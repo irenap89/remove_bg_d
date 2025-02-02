@@ -33,6 +33,8 @@ function Bg() {
            <img src={banner} />
            <img src={logo} className='logo'/>
         </div>
+
+        
    
     </div>
   )
