@@ -134,3 +134,36 @@
     border-bottom: 3px solid #9C27B0;
     height: 37px;
 }
+
+.eula_cont{
+    position: absolute;
+}
+
+.eula_img_btn{
+    background-image: url(./assets/eula.png);
+    background-repeat: no-repeat;
+    background-position: 10px;
+
+    background-color: #475366;
+    border: 0;
+    color: #ffffff87;
+    border-radius: 50px;
+    width: 120px;
+    height: 30px;
+    text-align: right;
+    padding-right: 13px;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+.eula_text{
+    color: white;
+    text-align: right;
+    width: 666px;
+    right: -7px;
+    margin-top: 18px;
+    color: #ffffff70;
+    font-family: sans-serif;
+    font-size: 12px;
+}
