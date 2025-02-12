@@ -3,6 +3,7 @@ import close_img from './assets/close.png'
 import './Bg.css'
 import banner from './assets/banner.png'
 import logo from './assets/logo.png'
+import DownloadImg from './DownloadImg'
 function Bg() {
 
   const [tab, settab] = useState(1)
@@ -25,7 +26,8 @@ function Bg() {
       
             <div className='left_div_cont_inner'>
 
-
+                <DownloadImg title="תמונה חינם" subTitle="תצוגה מקדימה של תמונה" btn_text="הורד" small_text="איכות טובה עד 0.25 מגה פיקסל"/>
+                <DownloadImg title="pro" subTitle="תמונה מלאה" btn_text="הורד HD" small_text="האיכות הטובה ביותר עד 25 מגה פיקסל"/>
 
             </div>
 
