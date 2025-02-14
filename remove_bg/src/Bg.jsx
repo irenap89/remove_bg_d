@@ -17,6 +17,11 @@ function Bg() {
   const [show_download_popup_s, setshow_download_popup_s] = useState(false);
   
   const [err_msg, seterr_msg] = useState('');
+  const [file_img_name, set_file_img_name] = useState('');
+  const [color, set_color] = useState('');
+  const [show_loader, set_show_loader] = useState(false);
+  const [not_robot_checked, set_not_robot_checked] = useState(false);
+  const [err_msg_download, seterr_msg_download] = useState('');
 
   function show_download_popup(val){
     setshow_download_popup_s(val);
@@ -35,10 +40,10 @@ function Bg() {
     if (file_img.type=='image/png' || file_img.type=='image/jpeg'  || file_img.type=='image/jpg'){
         if (file_img.size<=1000000){
           
-
+          set_show_loader(true);
           let formData = new FormData();
           formData.append('file', file_img);
-          // formData.append('color', color);
+          formData.append('color', color);
         
           axios.post('http://localhost:5000/upload_file',
               formData, {
@@ -47,13 +52,12 @@ function Bg() {
                 }
               }
             ).then(function (res) {
-              console.log(res);
+               set_show_loader(false);
+               set_file_img_name(res.data)
             })
             .catch(function () {
               console.log('FAILURE!!');
             });
-      
-
 
 
         } else {
@@ -64,6 +68,27 @@ function Bg() {
       seterr_msg('קובץ לא נתמך');
     }
 
+  }
+
+  function download_img_func(){
+
+      if (not_robot_checked){
+        seterr_msg_download('');
+          
+        fetch('http://localhost:5000/no_bg_'+file_img_name)
+            .then(response => {
+                response.blob().then(blob => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = file_img_name;
+                    a.click();
+                });
+        });
+
+      } else {
+        seterr_msg_download('יש לסמן אני לא רובוט');
+      }
   }
   
   return (
@@ -102,9 +127,9 @@ function Bg() {
             
             <div className='right_div_cont_inner'>
 
-               {tab==1? <Tab tab="no_bg"/> :
+               {tab==1? <Tab tab="no_bg" file_name={file_img_name} set_color={set_color} show_loader={show_loader}/> :
 
-                <Tab tab="original"/> }
+                <Tab tab="original" file_name={file_img_name} set_color={set_color} show_loader={show_loader}/> }
 
             </div>
 
@@ -162,7 +187,7 @@ function Bg() {
 
           <div className='not_robot_cont'>
               <div className='checkbox_cont'>
-                <input type="checkbox" />
+                <input type="checkbox" checked={not_robot_checked} onChange={(e)=>set_not_robot_checked(e.target.checked)}/>
                 <div>אני לא רובוט</div>
               </div>
 
@@ -174,9 +199,11 @@ function Bg() {
 
               <div className='cancel_btn' onClick={()=>setshow_download_popup_s(false)}>ביטול</div>
 
-              <div className='approve_btn'>אישור</div>
+              <div className='approve_btn' onClick={()=>download_img_func()}>אישור</div>
 
           </div>
+
+          <div className='msg_download'> {err_msg_download} </div>
 
         </div>
       </> : <></>}
