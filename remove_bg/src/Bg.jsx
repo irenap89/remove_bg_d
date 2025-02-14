@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useRef } from 'react'
 import close_img from './assets/close.png'
 import './Bg.css'
 import banner from './assets/banner.png'
@@ -7,6 +7,7 @@ import DownloadImg from './DownloadImg'
 import Tab from './Tab'
 import close_img_black from './assets/close1.png'
 import not_robot from './assets/not_robot.png'
+import axios from 'axios'
 
 function Bg() {
 
@@ -14,11 +15,57 @@ function Bg() {
 
   const [show_eula_popup, setshow_eula_popup] = useState(false);
   const [show_download_popup_s, setshow_download_popup_s] = useState(false);
+  
+  const [err_msg, seterr_msg] = useState('');
 
   function show_download_popup(val){
     setshow_download_popup_s(val);
   }
 
+  
+  const inputElement = useRef();
+
+  const fileInput = () => {
+    inputElement.current.click();
+  };
+
+  function file_upload_func(e){
+    let file_img=e.target.files[0];
+
+    if (file_img.type=='image/png' || file_img.type=='image/jpeg'  || file_img.type=='image/jpg'){
+        if (file_img.size<=1000000){
+          
+
+          let formData = new FormData();
+          formData.append('file', file_img);
+          // formData.append('color', color);
+        
+          axios.post('http://localhost:5000/upload_file',
+              formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              }
+            ).then(function (res) {
+              console.log(res);
+            })
+            .catch(function () {
+              console.log('FAILURE!!');
+            });
+      
+
+
+
+        } else {
+          seterr_msg('קובץ גדול מידי');
+        }
+      
+    } else {
+      seterr_msg('קובץ לא נתמך');
+    }
+
+  }
+  
   return (
     <>
     <div className='bg_cont'>
@@ -26,7 +73,9 @@ function Bg() {
 
         <h1 className='bg_title'>העלאת תמונה כדי להסיר את הרקע</h1>
         <div>
-            <button className='upload_img_btn'>העלאת תמונה</button>
+            <button className='upload_img_btn' onClick={fileInput}>העלאת תמונה</button>
+            <input type="file" className='file_upload_input' ref={inputElement} onChange={(e)=>file_upload_func(e)}/>
+             <div className='err_msg'>{err_msg}</div> 
             <div className='upload_img_text'>פורמטים נתמכים png, jpg</div>
         </div>
 
